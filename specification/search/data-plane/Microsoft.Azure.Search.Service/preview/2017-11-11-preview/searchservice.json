@@ -3439,7 +3439,7 @@
       "x-nullable": false,
       "description": "Represents the overall indexer status."
     },
-    "Field": {
+    "YField": {
       "properties": {
         "name": {
           "externalDocs": {
@@ -3530,7 +3530,7 @@
       "description": "Represents a field in an index definition in Azure Search, which describes the name, data type, and search behavior of a field.",
       "x-ms-external": true
     },
-    "XBaseField": {
+    "BaseField": {
       "type": "object",
       "discriminator": "fieldType",
       "properties": {
@@ -3547,19 +3547,19 @@
         "fieldType"
       ]
     },
-    "XComplexField": {
+    "ComplexField": {
       "allOf": [ 
         {
-          "$ref": "#/definitions/XBaseField"
+          "$ref": "#/definitions/BaseField"
         }
       ],
       "properties": {
       }
     },
-    "XField": {
+    "Field": {
       "allOf": [
         {
-          "$ref": "#/definitions/XBaseField"
+          "$ref": "#/definitions/BaseField"
         }
       ],
       "properties": {
@@ -3963,14 +3963,7 @@
         "fields": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Field"
-          },
-          "description": "The fields of the index."
-        },
-        "xfields": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/XBaseField"
+            "$ref": "#/definitions/BaseField"
           },
           "description": "The fields of the index."
         },
