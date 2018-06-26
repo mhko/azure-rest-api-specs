@@ -64,6 +64,184 @@
         }
       }
     },
+    "/docs": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "operationId": "DocumentsProxy_SearchGet",
+        "description": "Queries for search in the Azure Search index.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "x-ms-client-name": "searchText"
+          },
+          {
+            "name":"highlightPreTag",
+            "type": "string",
+            "in": "query",
+            "x-ms-parameter-grouping": {
+              "name": "XSearchParameters"
+            }           
+          },
+          {
+            "name":"highlightPostTag",
+            "type": "string",
+            "in": "query",
+            "x-ms-parameter-grouping": {
+              "name": "XSearchParameters"
+            }           
+          },
+          {
+            "name":"select",
+            "type": "array",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "x-ms-parameter-grouping": {
+              "name": "XSearchParameters"
+            }           
+          },
+          {
+            "name":"highlights",
+            "type": "array",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "x-ms-parameter-grouping": {
+              "name": "XSearchParameters"
+            }           
+          },
+          {
+            "name":"searchFields",
+            "type": "array",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "x-ms-parameter-grouping": {
+              "name": "XSearchParameters"
+            }           
+          },
+          {
+            "$ref": "#/parameters/ClientRequestIdParameter"
+          }
+        ],
+        "x-ms-request-id": "request-id",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/XDocumentSearchResult"
+            }
+          }
+        }
+      }
+    },
+    "/docs/suggest": {
+      "get": {
+        "tags": [
+          "Suggest"
+        ],
+        "operationId": "DocumentsProxy_SuggestGet",
+        "description": "Queries for suggestions in the Azure Search index.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "x-ms-client-name": "searchText"
+          },
+          {
+            "name": "suggesterName",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "suggesterName",
+            "x-ms-parameter-grouping": {
+              "name": "XSuggestParameters"
+            }            
+          },
+          {
+            "name":"select",
+            "type": "array",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "x-ms-parameter-grouping": {
+              "name": "XSuggestParameters"
+            }           
+          },
+          {
+            "name": "fuzzy",
+            "in": "query",
+            "type": "boolean",
+            "description": "fuzzy",
+            "x-ms-parameter-grouping": {
+              "name": "XSuggestParameters"
+            }            
+          },
+          {
+            "$ref": "#/parameters/ClientRequestIdParameter"
+          }
+        ],
+        "x-ms-request-id": "request-id",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/XDocumentSuggestResult"
+            }
+          }
+        }
+      }
+    },
+    "/docs/index": {
+      "post": {
+        "tags": [
+          "DocumentIndex"
+        ],
+        "operationId": "DocumentsProxy_DocumentIndexPost",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/ClientRequestIdParameter"
+          },          
+          {
+            "name": "IndexingRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IndexingRequest"
+            }
+          }          
+        ],
+        "x-ms-request-id": "request-id",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/DocumentIndexResult"
+            }
+          }
+        }
+      }
+    },    
     "/docs/autocomplete": {
       "get": {
         "tags": [
@@ -224,10 +402,78 @@
           }
         }
       }
-      
     }
   },
   "definitions": {
+    "XDocumentSearchResult": {
+      "type": "object",
+        "properties": {
+          "value": {
+            "$ref": "#/definitions/XSearchBatchResult",
+            "x-ms-client-name": "Results"
+          }
+        }
+    },
+    "XSearchBatchResult": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/XSearchDocument"
+      }
+    },
+    "XSearchDocument": {
+      "type": "object",
+      "properties": {
+         "@search.score": {
+            "type":"string"
+         }
+       },
+      "additionalProperties": true
+    },    
+    "XDocumentSuggestResult": {
+      "type": "object",
+        "properties": {
+          "value": {
+            "$ref": "#/definitions/XSuggestBatchResult"
+          }
+        }
+    },
+    "XSuggestBatchResult": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/XSuggestDocument"
+      }
+    },
+    "XSuggestDocument": {
+      "type": "object",
+      "properties": {
+         "@search.text": {
+            "type":"string"
+         }
+       },
+      "additionalProperties": true
+    },
+    "IndexingRequest": {
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/XIndexActions"
+        }
+      }
+    },    
+    "XIndexActions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/XIndexAction"
+      }
+    },
+    "XIndexAction": {
+      "type": "object",
+      "properties": {
+         "@search.action": {
+            "type":"string"
+         }
+       },
+      "additionalProperties": true
+    },    
     "IndexingResult": {
       "properties": {
         "key": {

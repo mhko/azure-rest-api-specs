@@ -3530,6 +3530,123 @@
       "description": "Represents a field in an index definition in Azure Search, which describes the name, data type, and search behavior of a field.",
       "x-ms-external": true
     },
+    "XBaseField": {
+      "type": "object",
+      "discriminator": "fieldType",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/DataType",
+          "description": "The data type of the field."
+        }
+      },
+      "required": [
+        "name",
+        "fieldType"
+      ]
+    },
+    "XComplexField": {
+      "allOf": [ 
+        {
+          "$ref": "#/definitions/XBaseField"
+        }
+      ],
+      "properties": {
+      }
+    },
+    "XField": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/XBaseField"
+        }
+      ],
+      "properties": {
+        "name": {
+          "externalDocs": {
+            "url": "https://docs.microsoft.com/rest/api/searchservice/Naming-rules"
+          },
+          "type": "string",
+          "description": "The name of the field."
+        },
+        "analyzer": {
+          "externalDocs": {
+            "url": "https://docs.microsoft.com/rest/api/searchservice/Language-support"
+          },
+          "$ref": "#/definitions/AnalyzerName",
+          "description": "The name of the analyzer to use for the field at search time and indexing time. This option can be used only with searchable fields and it can't be set together with either searchAnalyzer or indexAnalyzer. Once the analyzer is chosen, it cannot be changed for the field."
+        },
+        "searchAnalyzer": {
+          "externalDocs": {
+            "url": "https://docs.microsoft.com/rest/api/searchservice/Language-support"
+          },
+          "$ref": "#/definitions/AnalyzerName",
+          "description": "The name of the analyzer used at search time for the field. This option can be used only with searchable fields. It must be set together with indexAnalyzer and it cannot be set together with the analyzer option. This analyzer can be updated on an existing field."
+        },
+        "indexAnalyzer": {
+          "externalDocs": {
+            "url": "https://docs.microsoft.com/rest/api/searchservice/Language-support"
+          },
+          "$ref": "#/definitions/AnalyzerName",
+          "description": "The name of the analyzer used at indexing time for the field. This option can be used only with searchable fields. It must be set together with searchAnalyzer and it cannot be set together with the analyzer option. Once the analyzer is chosen, it cannot be changed for the field."
+        },
+        "synonymMaps": {
+          "externalDocs": {
+            "url": "https://docs.microsoft.com/rest/api/searchservice/Synonym-Map-operations"
+          },
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of synonym maps to apply in query expansion. Only one synonym map is allowed in the list currently. Synonym maps must be uploaded first to be referenced. This option can be used only with searchable fields."
+        },
+        "key": {
+          "x-ms-client-name": "isKey",
+          "type": "boolean",
+          "x-nullable": false,
+          "description": "A value indicating whether the field is the key of the index. Valid only for string fields. Every index must have exactly one key field."
+        },
+        "searchable": {
+          "x-ms-client-name": "isSearchable",
+          "type": "boolean",
+          "x-nullable": false,
+          "description": "A value indicating whether the field is included in full-text searches. Valid only forstring or string collection fields. Default is false."
+        },
+        "filterable": {
+          "x-ms-client-name": "isFilterable",
+          "type": "boolean",
+          "x-nullable": false,
+          "description": "A value indicating whether the field can be used in filter expressions. Default is false."
+        },
+        "sortable": {
+          "x-ms-client-name": "isSortable",
+          "type": "boolean",
+          "x-nullable": false,
+          "description": "A value indicating whether the field can be used in orderby expressions. Not valid for string collection fields. Default is false."
+        },
+        "facetable": {
+          "x-ms-client-name": "isFacetable",
+          "type": "boolean",
+          "x-nullable": false,
+          "description": "A value indicating whether it is possible to facet on this field. Not valid for geo-point fields. Default is false."
+        },
+        "retrievable": {
+          "x-ms-client-name": "isRetrievable",
+          "type": "boolean",
+          "x-nullable": false,
+          "default": true,
+          "description": "A value indicating whether the field can be returned in a search result. Default is true."
+        }
+      },
+      "required": [
+        "name", "type"
+      ],
+      "externalDocs": {
+        "url": "https://docs.microsoft.com/rest/api/searchservice/Create-Index"
+      },
+      "description": "Represents a field in an index definition in Azure Search, which describes the name, data type, and search behavior of a field."
+    },
     "TextWeights": {
       "properties": {
         "weights": {
@@ -3847,6 +3964,13 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Field"
+          },
+          "description": "The fields of the index."
+        },
+        "xfields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/XBaseField"
           },
           "description": "The fields of the index."
         },
