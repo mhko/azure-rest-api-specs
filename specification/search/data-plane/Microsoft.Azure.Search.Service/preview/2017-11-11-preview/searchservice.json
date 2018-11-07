@@ -3647,6 +3647,38 @@
       "x-nullable": false,
       "description": "Represents the overall indexer status."
     },
+    "BaseField": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Gets or sets the name of the field",
+          "externalDocs": {
+            "url": "https://docs.microsoft.com/rest/api/searchservice/Naming-rules"
+          }
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "ComplexField": {
+      "allOf": [ 
+        {
+          "$ref": "#/definitions/BaseField"
+        }
+      ],
+      "properties": {
+        "isCollection": {
+          "type": "boolean",
+          "x-nullable": false,
+          "description": "",
+          "default": false,
+          "x-ms-client-name": "IsCollection"
+        }
+      },
+      "x-ms-client-name": "ComplexField"
+    },
     "Field": {
       "properties": {
         "name": {
@@ -4058,7 +4090,7 @@
         "fields": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Field"
+            "$ref": "#/definitions/BaseField"
           },
           "description": "The fields of the index."
         },
